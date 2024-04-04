@@ -2,9 +2,8 @@ const prevBtn = document.querySelector('#prev')
 const nextBtn = document.querySelector('#next')
 const title= document.querySelector('.post h1')
 const text = document.querySelector('.post p')
-
+let postNumber = 1
 const API_URL = 'https://jsonplaceholder.typicode.com'
-
 const getPostDetails = async (id) => {
     const res = await fetch(`${API_URL}/posts/${id}`)
     const data = await res.json()
@@ -12,19 +11,24 @@ const getPostDetails = async (id) => {
 }
 
 prevBtn.addEventListener('click', async ()  => {
-     if (post_number > 1) {
-            post_number++
-            loadPost()
+     if (postNumber > 1) {
+            postNumber--
+          await  loadPost()
+            nextBtn.disabled = false
+    }
+    if (postNumber === 1) {
+        prevBtn.disabled = true
     }
 })
 nextBtn.addEventListener ('click', async () => {
-    post_number++
-      loadPost()
+    postNumber++
+     await loadPost()
+      prevBtn.disabled = false
 })
 
 async function loadPost() {
     try {
-        const postData = await getPostDetails(post_number)
+        const postData = await getPostDetails(postNumber)
         title.textContent = postData.title
         text.textContent = postData.body
     } catch (error) {
@@ -34,5 +38,4 @@ async function loadPost() {
     }
 }
 
-let post_number = 1
 loadPost()
